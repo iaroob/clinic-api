@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: clinic_app
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+
+  db:
+    image: mariadb:11
+    container_name: clinic_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: clinic
+      MYSQL_USER: clinic
+      MYSQL_PASSWORD: clinic
+    ports:
+      - "3307:3306"
+    volumes:
+      - db-data:/var/lib/mysql
+  
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: clinic_phpmyadmin
+    environment:
+      PMA_HOST: db
+      PMA_USER: clinic
+      PMA_PASSWORD: clinic
+    ports:
+      - "8081:80"
+    depends_on:
+      - db
+    platform: linux/amd64
+
+volumes:
+  db-data:
