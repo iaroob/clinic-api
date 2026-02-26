@@ -8,58 +8,48 @@ use Illuminate\Http\Request;
 class PatientController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Listar todos los pacientes
      */
     public function index()
     {
-        //
+        $patients = Patient::all();
+        return response()->json([
+            'message' => 'Listado de pacientes',
+            'patients' => $patients
+        ], 200);
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
+     * Crear un nuevo paciente
      */
     public function store(Request $request)
     {
-        //
+        // Validación de datos
+        $validated = $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name'  => 'required|string|max:255',
+            'email'      => 'required|email|unique:patients,email',
+            'phone'      => 'required|string|max:20',
+            'note'       => 'nullable|string',
+        ]);
+
+        // Crear paciente
+        $patient = Patient::create($validated);
+
+        return response()->json([
+            'message' => 'Paciente creado correctamente',
+            'patient' => $patient
+        ], 201);
     }
 
     /**
-     * Display the specified resource.
+     * Ver un paciente específico
      */
     public function show(Patient $patient)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Patient $patient)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Patient $patient)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Patient $patient)
-    {
-        //
+        return response()->json([
+            'message' => 'Detalle del paciente',
+            'patient' => $patient
+        ], 200);
     }
 }
