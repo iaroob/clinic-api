@@ -36,10 +36,10 @@ cd clinic-api
 
    php artisan serve
 
-#Pruebas en Postman   
+# Pruebas en Postman   
 
-##Autenticación
-###Login
+## Autenticación
+### Login
 
 Endpoint: POST /api/login
 
@@ -66,8 +66,8 @@ Ejemplo de Respuesta exitosa:
 
 Nota: Usa este token en los siguientes endpoints en la cabecera Authorization: Bearer TU_TOKEN_DE_API.
 
-##Pacientes
-###Crear paciente
+## Pacientes
+### Crear paciente
 
 Endpoint: POST /api/patients
 
@@ -100,8 +100,8 @@ Respuesta exitosa:
 }
 
 
-##Citas
-###Crear cita
+## Citas
+### Crear cita
 
 Endpoint: POST /api/appointments
 
