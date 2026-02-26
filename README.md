@@ -11,8 +11,9 @@ Se ha realizado el proyecto en Docker.
 1. Clonar el repositorio:
 
 
-git clone https://github.com/iaroob/clinica-api.git
-cd clinica-api
+git clone https://github.com/iaroob/clinic-api.git
+
+cd clinic-api
 
 2. Instalar dependencias:
 
