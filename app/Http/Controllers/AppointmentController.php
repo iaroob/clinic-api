@@ -2,64 +2,80 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Appointment;
 use Illuminate\Http\Request;
+use App\Legacy\Database;
+use App\Legacy\AppointmentLegacy;
 
 class AppointmentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    protected $legacy;
+
+    public function __construct()
     {
-        //
+        // Inicializamos el legacy
+        $db = new Database();
+        $this->legacy = new AppointmentLegacy($db);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Listar citas por día
+     * Usa query param ?date=YYYY-MM-DD
      */
-    public function create()
+    public function index(Request $request)
     {
-        //
+        $date = $request->query('date', date('Y-m-d'));
+
+        $appointments = $this->legacy->getByDate($date);
+
+        return response()->json([
+            'date' => $date,
+            'appointments' => $appointments
+        ], 200);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Crear nueva cita usando el legacy
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'paciente_id' => 'required|integer|exists:patients,id',
+            'dentista_id' => 'required|integer|exists:dentists,id',
+            'fecha' => 'required|date_format:Y-m-d',
+            'hora' => 'required|date_format:H:i',
+            'duracion' => 'nullable|integer|min:1',
+            'motivo' => 'nullable|string|max:255',
+        ]);
+
+        $result = $this->legacy->create($request->all());
+
+        if ($result['status'] === 'success') {
+            return response()->json([
+                'message' => 'Cita creada correctamente',
+                'appointment_id' => $result['appointment_id']
+            ], 201);
+        }
+
+        return response()->json([
+            'message' => $result['message']
+        ], 400);
     }
 
     /**
-     * Display the specified resource.
+     * Mostrar detalles de una cita
      */
-    public function show(Appointment $appointment)
+    public function show($appointmentId)
     {
-        //
-    }
+        $appointment = $this->legacy->getById($appointmentId);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Appointment $appointment)
-    {
-        //
-    }
+        if (!$appointment) {
+            return response()->json([
+                'message' => 'Cita no encontrada'
+            ], 404);
+        }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Appointment $appointment)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Appointment $appointment)
-    {
-        //
+        return response()->json([
+            'appointment' => $appointment
+        ], 200);
     }
 }
