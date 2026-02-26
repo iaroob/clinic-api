@@ -124,3 +124,8 @@ Respuesta exitosa:
     "message": "Cita creada correctamente",
     "appointment_id": 5
 }
+
+# Mejoras y funcionalidades adicionales
+
+Faltaría mejorar la validación de datos mediante FormRequests. 
+Faltaría implementación completa de listar citas por día.
